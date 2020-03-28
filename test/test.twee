@@ -1,0 +1,21 @@
+:: StoryTitle
+Test Story
+
+:: StoryData
+{
+    "ifid": "test",
+    "start": "Passage 1"
+}
+
+:: Passage 1 {"meta": "data"}
+export const name = "hello world";
+
+Blah *blah* <Blah>{name}</Blah> blah
+[[Test2]]
+Test
+
+:: Passage 2 [testtag]
+Qwer tyuiop [[Test|Passage 3]] blah
+
+:: Passage 3
+Test!
