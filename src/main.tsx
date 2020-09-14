@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {MDXProvider} from "@mdx-js/react";
 import story from "../test/test.twee";
 import "./style.css";
+import StoryApp from "./StoryApp.";
 
 console.log(story);
 
@@ -13,11 +13,7 @@ const components = {
     Blah
 };
 
-const Component = story.passages[0].createComponent();
-
 ReactDOM.render(
-    <MDXProvider components={components as any}>
-        <Component />
-    </MDXProvider>,
+    <StoryApp story={story} components={components} />,
     document.getElementById("root")
 );

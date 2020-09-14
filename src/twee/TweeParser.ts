@@ -19,23 +19,25 @@ export type Passage = {
     tags: string[];
     metadata: {[prop: string]: Json};
     linksTo: string[];
+    line: number;
     content: string;
 };
 
-const parseHeader = (input: string): Passage => {
+const parseHeader = (input: string, lineNum: number): Passage => {
     const match = input.match(/:: ([^[{]+)(?:\[([^\]]+)\])? ?(?:({.+$))?/);
     if (!match) {
-        throw new Error("Malformed passage header");
+        throw new Error(`Malformed passage header.`);
     }
     const name = match[1];
     const tags = match[2];
     const metadata = match[3];
 
     return {
-        name: name,
+        name: name.trim(),
         tags: tags ? tags.split(" ") : [],
         metadata: metadata ? JSON.parse(metadata) : {},
         linksTo: [],
+        line: lineNum,
         content: ""
     };
 };
@@ -85,13 +87,13 @@ export const parse = (input: string): Story => {
             try {
                 if (line.startsWith("::")) {
                     finalizeCurrentPassage();
-                    currentPassage = parseHeader(line);
+                    currentPassage = parseHeader(line, i);
                     return;
                 }
 
                 if (!currentPassage) {
                     if (line) {
-                        throw new Error("Content outside passage.");
+                        throw new Error("Content before first passage.");
                     }
                     return;
                 }
@@ -108,6 +110,10 @@ export const parse = (input: string): Story => {
         }
         if (!metadata) {
             throw new Error("StoryData passage not found.");
+        }
+        const start = metadata!.startName || "Start";
+        if (!passages.find(p => p.name === start)) {
+            throw new Error("Starting passage not found.");
         }
 
         return {
